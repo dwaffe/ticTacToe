@@ -5,9 +5,14 @@ public abstract class Player {
         this.piece = piece;
     }
 
-    public abstract int makeMove();
+    public abstract int makeMove(Board board);
 
     public Piece getPiece() {
         return piece;
+    }
+
+    @Override
+    public String toString() {
+        return String.valueOf(this.piece.getSymbol());
     }
 }

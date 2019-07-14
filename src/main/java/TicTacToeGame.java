@@ -2,8 +2,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TicTacToeGame {
-    private Board board;
+    private Board board = new Board(3, 3);
     private List<Player> players;
+    private GameProgress gameProgress = new GameProgress(board);
 
     public void run() {
         TicTacToeMenu menu = new TicTacToeMenu();
@@ -14,7 +15,7 @@ public class TicTacToeGame {
                 System.out.println("wychodze");
                 break;
             case TicTacToeMenu.PLAY_WITH_COMPUTER:
-                prepareBoard();
+                cleanBoard();
                 preparePlayers(
                         new HumanPlayer(new XPiece()),
                         new AIPlayer(new OPiece())
@@ -30,21 +31,37 @@ public class TicTacToeGame {
         players.add(B);
     }
 
-    private void prepareBoard() {
+    private void cleanBoard() {
         this.board = new Board(3, 3);
     }
 
     private void start()
     {
         int moveCounter = 0;
-        // todo: warunek zakończenia
-        while (true) {
+        while (!gameProgress.endGame()) {
+            int playerNumber = moveCounter % 2;
+            Player player = this.players.get(playerNumber);
+            System.out.println("Player " + (playerNumber + 1) + ":");
+
             this.board.print();
-            Player player = this.players.get(moveCounter % 2);
-            int move = player.makeMove();
+            int move = player.makeMove(board);
+            if (!MoveValidator.validate(board, move)) {
+                System.out.println("Ruch nieprawidłowy");
+                continue;
+            }
+
             this.board.setField(move, player.getPiece());
 
+            gameProgress.setBoard(this.board);
             moveCounter++;
+        }
+
+        this.board.print();
+        System.out.println("Koniec gry");
+        for (Player player: players) {
+            if (gameProgress.isPieceWon(player.getPiece())) {
+                System.out.println("Wygrał gracz: " + player);
+            }
         }
     }
 }

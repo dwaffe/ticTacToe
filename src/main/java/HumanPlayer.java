@@ -7,7 +7,7 @@ public class HumanPlayer extends Player {
     }
 
     @Override
-    public int makeMove() {
+    public int makeMove(Board board) {
         Scanner scanner = new Scanner(System.in);
         return scanner.nextInt();
     }
